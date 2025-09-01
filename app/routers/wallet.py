@@ -16,3 +16,8 @@ def get_user_balance(user_id:int,db:Session=Depends(get_db)):
 def add_wallet_balance(user_id:int,request:WalletAddBalance,db:Session=Depends(get_db)):
     service = wallet.WalletService(db)
     return service.add_wallet_balance(user_id=user_id,request=request)
+
+@router.post('/{user_id}/withdraw',response_model=WalletResponse)
+def deduct_wallet_balance(user_id:int,request:WalletAddBalance,db:Session=Depends(get_db)):
+    service = wallet.WalletService(db)
+    return service.deduct_wallet_balance(user_id=user_id,request=request)
