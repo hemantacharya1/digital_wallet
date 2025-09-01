@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from ..schemas.users import UserCreate, UserUpdate
 from ..models.users import User
+from fastapi import HTTPException
 class UserService():
 
     def __init__(self, db: Session):
@@ -19,7 +20,7 @@ class UserService():
     def update_user(self, user_id: int, user: UserUpdate):
         db_user = self.db.query(User).filter(User.id == user_id).first()
         if db_user is None:
-            raise ValueError(f"User not found with this id {user_id}")
+            raise HTTPException(status_code=404, detail=f"User not found with this id {user_id}")
         else :
             for key, value in user.dict().items():
                 setattr(db_user, key, value)
@@ -30,7 +31,7 @@ class UserService():
     def delete_user(self, user_id: int):
         db_user = self.db.query(User).filter(User.id == user_id).first()
         if db_user is None:
-            raise ValueError(f"User not found with this id {user_id}")
+            raise HTTPException(status_code=404, detail=f"User not found with this id {user_id}")
         else :
             self.db.delete(db_user)
             self.db.commit()

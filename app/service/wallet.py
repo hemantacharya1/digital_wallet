@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from ..models.users import User
 from ..models.transactions import Transaction
 from ..schemas.wallet import WalletResponse,WalletAddBalance
+from fastapi import HTTPException
 
 class WalletService():
     def __init__(self, db: Session):
@@ -16,8 +17,8 @@ class WalletService():
                 last_update=user.updated_at
             )
         else:
-            raise ValueError(f"User not found with id {user_id}")
-        
+            raise HTTPException(status_code=404, detail=f"User not found with id {user_id}")
+
     def add_wallet_balance(self,user_id:int,request:WalletAddBalance):
         user = self.db.query(User).filter(User.id == user_id).first()
         if user:
@@ -39,4 +40,4 @@ class WalletService():
                 last_update=user.updated_at
             )
         else:
-            raise ValueError(f"User not found with id {user_id}")
+            raise HTTPException(status_code=404, detail=f"User not found with id {user_id}")
